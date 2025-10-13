@@ -37,7 +37,7 @@ while True:
             break
         cpu_zug_index = np.random.choice(len(freie_felder[0]))
         cpu_zug = (freie_felder[0][cpu_zug_index], freie_felder[1][cpu_zug_index])
-        if symbol == "X"
+        if symbol == "X":
             Spielfeld[cpu_zug] = "O"
         else:
             Spielfeld[cpu_zug] = "X"
