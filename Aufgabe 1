@@ -14,7 +14,7 @@ elif symbol == "O":
     print("Du hast O gewählt. Du bist Spieler 2.")
     print("Die CPU ist X.")
 else:
-    print("Ungültige Eingabe. Bitte starte     git add Aufgabe\ 1das Spiel neu und wähle entweder X oder O.")
+    print("Ungültige Eingabe. Bitte starte das Spiel neu und wähle entweder X oder O.")
     exit()
 print("Let's Go!")
 print(" ")
