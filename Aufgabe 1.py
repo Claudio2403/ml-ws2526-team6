@@ -1,3 +1,23 @@
+import numpy as np
+import random
+
+class Strategie:
+     def wähle_zug(self, spielfeld: np.matrix, cpu_symbol: str) -> tuple:
+          raise NotImplementedError("Methode muss noch in Unterklasse implementiert werden")
+     
+class Zufallsstrategie(Strategie):
+    def wähle_zug(self, spielfeld: np.matrix, cpu_symbol: str) -> tuple:
+         freie_felder_indices = np.where(spielfeld == "[ ]")
+         if len(freie_felder_indices[0] == 0):
+              return None
+         cpu_zug_index = random.choice(range(freie_felder_indices[0]))
+         cpu_zug = (freie_felder_indices[0][cpu_zug_index],freie_felder_indices[1][cpu_zug_index])
+         return cpu_zug
+    
+class IntelligenteStrategie(Strategie):
+     #Das hier muss noch bearbeitet werden
+     def wähle_zug(self, spielfeld, cpu_symbol):
+          return super().wähle_zug(spielfeld, cpu_symbol)
 
 def symbolwahl():
         global symbol
@@ -72,7 +92,7 @@ def gewinnPruefung():
        
 
 
-import numpy as np
+
 Spielfeld = np.matrix([["[ ]", "[ ]", "[ ]"],
                         ["[ ]", "[ ]", "[ ]"],
                         ["[ ]", "[ ]", "[ ]"]])
