@@ -1,0 +1,55 @@
+
+import numpy as np
+Spielfeld = np.array([["1 1", "1 2", "1 3"], ["2 1", "2 2", "2 3"], ["3 1", "3 2", "3 3"]])
+
+print("Willkommen bei deinem Tic Tac Toe Spiel!")
+print("Wähle ein Symbol: X oder O")
+symbol = input()
+if symbol == "X" or symbol == "x":
+    symbol = "X"
+    print("Du hast X gewählt. Du bist Spieler 1.")
+    print("Die CPU ist O.")
+    print(" ")
+elif symbol == "O":
+    print("Du hast O gewählt. Du bist Spieler 2.")
+    print("Die CPU ist X.")
+else:
+    print("Ungültige Eingabe. Bitte starte das Spiel neu und wähle entweder X oder O.")
+    exit()
+print("Let's Go!")
+print(" ")
+print(Spielfeld)
+print("Du bist am Zug! Wähle ein Feld, indem du die Koordinaten eingibst (z.B. 1 1 für die obere linke Ecke).")
+print(" ")
+while True:
+    zug = input()
+    if zug not in Spielfeld or np.any(Spielfeld == zug) == False or zug == "X" or zug == "O":
+        print("Ungültiger Zug. Bitte wähle ein freies Feld.")
+        continue
+    else:
+        Spielfeld[np.where(Spielfeld == zug)] = symbol
+        print(Spielfeld)
+        print("CPU ist am Zug...")
+        freie_felder = np.where(Spielfeld != "X")
+        freie_felder = np.where(Spielfeld != "O")
+        if len(freie_felder[0]) == 0:
+            print("Unentschieden! Das Spielfeld ist voll.")
+            break
+        cpu_zug_index = np.random.choice(len(freie_felder[0]))
+        cpu_zug = (freie_felder[0][cpu_zug_index], freie_felder[1][cpu_zug_index])
+        if symbol == "X":
+            Spielfeld[cpu_zug] = "O"
+        else:
+            Spielfeld[cpu_zug] = "X"
+        print(" ")
+        print(Spielfeld)
+        print("Du bist am Zug! Wähle ein Feld.")
+    if (Spielfeld[0, 0] == Spielfeld[0, 1] == Spielfeld[0, 2]) or (Spielfeld[1, 0] == Spielfeld[1, 1] == Spielfeld[1, 2]) or (Spielfeld[2, 0] == Spielfeld[2, 1] == Spielfeld[2, 2]) or (Spielfeld[0, 0] == Spielfeld[1, 0] == Spielfeld[2, 0]) or (Spielfeld[0, 1] == Spielfeld[1, 1] == Spielfeld[2, 1]) or (Spielfeld[0, 2] == Spielfeld[1, 2] == Spielfeld[2, 2]) or (Spielfeld[0, 0] == Spielfeld[1, 1] == Spielfeld[2, 2]) or (Spielfeld[0, 2] == Spielfeld[1, 1] == Spielfeld[2, 0]):
+        if symbol == "X":
+            print("Glückwunsch! Du hast gewonnen!")
+        else:
+            print("Die CPU hat gewonnen! Viel Glück beim nächsten Mal.")
+        break
+
+    #Lucas Kommentar
+    #Claudios Kommentar
