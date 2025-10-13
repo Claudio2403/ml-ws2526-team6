@@ -36,9 +36,16 @@ while True:
             break
         cpu_zug_index = np.random.choice(len(freie_felder[0]))
         cpu_zug = (freie_felder[0][cpu_zug_index], freie_felder[1][cpu_zug_index])
-        if symbol == "X" or symbol == "x":
+        if symbol == "X"
             Spielfeld[cpu_zug] = "O"
         else:
             Spielfeld[cpu_zug] = "X"
         print(" ")
         print(Spielfeld)
+        print("Du bist am Zug! Wähle ein Feld.")
+    if (Spielfeld[0, 0] == Spielfeld[0, 1] == Spielfeld[0, 2]) or (Spielfeld[1, 0] == Spielfeld[1, 1] == Spielfeld[1, 2]) or (Spielfeld[2, 0] == Spielfeld[2, 1] == Spielfeld[2, 2]) or (Spielfeld[0, 0] == Spielfeld[1, 0] == Spielfeld[2, 0]) or (Spielfeld[0, 1] == Spielfeld[1, 1] == Spielfeld[2, 1]) or (Spielfeld[0, 2] == Spielfeld[1, 2] == Spielfeld[2, 2]) or (Spielfeld[0, 0] == Spielfeld[1, 1] == Spielfeld[2, 2]) or (Spielfeld[0, 2] == Spielfeld[1, 1] == Spielfeld[2, 0]):
+        if symbol == "X":
+            print("Glückwunsch! Du hast gewonnen!")
+        else:
+            print("Die CPU hat gewonnen! Viel Glück beim nächsten Mal.")
+        break
