@@ -5,11 +5,13 @@ def symbolwahl():
 
     print("Wähle ein Symbol: X oder O")
     symbol = input().strip().upper()
-    if symbol == "X":
+    if symbol == "X" or symbol == "x":
+        symbol = "X"
         print("Du hast X gewählt. Du bist Spieler 1.")
         print("Die CPU ist O.")
         print(" ")
-    elif symbol == "O":
+    elif symbol == "O" or symbol == "o" or symbol == "0":
+        symbol = "O"
         print("Du hast O gewählt. Du bist Spieler 2.")
         print("Die CPU ist X.")
     else:
@@ -18,7 +20,7 @@ def symbolwahl():
 
 def ungültigerZugPruefung(zug):
     if len(zug.split()) != 2:
-        print("Ungültige Eingabe. Bitte gib die Koordinaten im Format 'Zeile Spalte' ein (z.B. 1 1).")
+        print("Ungültige Eingabe. Bitte gib die Koordinaten im Format 'Zeile Spalte' ein.")
         return False
 
     zeile, spalte = zug.split()
@@ -100,7 +102,7 @@ if symbol == "O":
     print(Spielfeld)
     print(" ")
 else:
-    print("Du bist am Zug! Wähle ein Feld, indem du die Koordinaten eingibst (z.B. 1 1 für die Mitte).")
+    print("Du bist am Zug! Wähle ein Feld, indem du die Koordinaten eingibst.")
     print(Spielfeld)
     print(" ")
 
