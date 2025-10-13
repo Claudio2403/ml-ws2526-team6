@@ -1,128 +1,120 @@
 import numpy as np
-import random
-
-class Strategie:
-     def wähle_zug(self, spielfeld: np.matrix, cpu_symbol: str) -> tuple:
-          raise NotImplementedError("Methode muss noch in Unterklasse implementiert werden")
-     
-class Zufallsstrategie(Strategie):
-    def wähle_zug(self, spielfeld: np.matrix, cpu_symbol: str) -> tuple:
-         freie_felder_indices = np.where(spielfeld == "[ ]")
-         if len(freie_felder_indices[0] == 0):
-              return None
-         cpu_zug_index = random.choice(range(freie_felder_indices[0]))
-         cpu_zug = (freie_felder_indices[0][cpu_zug_index],freie_felder_indices[1][cpu_zug_index])
-         return cpu_zug
-    
-class IntelligenteStrategie(Strategie):
-     #Das hier muss noch bearbeitet werden
-     def wähle_zug(self, spielfeld, cpu_symbol):
-          return super().wähle_zug(spielfeld, cpu_symbol)
 
 def symbolwahl():
-        global symbol
+    global symbol
 
-        print("Wähle ein Symbol: X oder O")
-        symbol = input()
-        if symbol == "X" or symbol == "x":
-            symbol = "X"
-            print("Du hast X gewählt. Du bist Spieler 1.")
-            print("Die CPU ist O.")
-            print(" ")
-        elif symbol == "O" or symbol == "o" or symbol == "0":
-            symbol = "O"
-            print("Du hast O gewählt. Du bist Spieler 2.")
-            print("Die CPU ist X.")
-        else:
-            print("Ungültige Eingabe.")
-            symbolwahl()
+    print("Wähle ein Symbol: X oder O")
+    symbol = input().strip().upper()
+    if symbol == "X":
+        print("Du hast X gewählt. Du bist Spieler 1.")
+        print("Die CPU ist O.")
+        print(" ")
+    elif symbol == "O":
+        print("Du hast O gewählt. Du bist Spieler 2.")
+        print("Die CPU ist X.")
+    else:
+        print("Ungültige Eingabe. Bitte wähle X oder O.")
+        symbolwahl()
+
+def ungültigerZugPruefung(zug):
+    if len(zug.split()) != 2:
+        print("Ungültige Eingabe. Bitte gib die Koordinaten im Format 'Zeile Spalte' ein (z.B. 1 1).")
+        return False
+
+    zeile, spalte = zug.split()
+    if not zeile.isdigit() or not spalte.isdigit():
+        print("Ungültige Eingabe. Die Koordinaten müssen Zahlen sein.")
+        return False
+
+    zeile, spalte = int(zeile), int(spalte)
+    if 0 <= zeile <= 2 and 0 <= spalte <= 2:
+        return True
+    else:
+        print("Ungültige Eingabe. Die Koordinaten müssen zwischen 0 und 2 liegen.")
+        return False
 
 def spielzugSpieler():
-        global freie_felder
-        global zug_index
-
-        freie_felder = np.where((Spielfeld != "X") & (Spielfeld != "O"))
-        zug_index = np.where(Spielfeld[zug].split() == "[ ]")
-        if symbol == "X":
-            Spielfeld[zug_index] = "X"
+    global Spielfeld
+    while True:
+        zug = input("Wähle ein Feld (z.B. 1 1 für die Mitte): ")
+        if not ungültigerZugPruefung(zug):
+            continue
+        zeile, spalte = map(int, zug.split())
+        if Spielfeld[zeile, spalte] == "[ ]":
+            Spielfeld[zeile, spalte] = f"[{symbol}]"
+            break
         else:
-            Spielfeld[zug_index] = "O"
+            print("Das Feld ist bereits belegt. Wähle ein anderes Feld.")
 
 def spielzugComputer():
-        freie_felder = np.where((Spielfeld != "X") & (Spielfeld != "O"))
-        cpu_zug_index = np.random.choice(len(freie_felder[0]))
-        cpu_zug = (freie_felder[0][cpu_zug_index], freie_felder[1][cpu_zug_index])
+    freie_felder = np.argwhere(Spielfeld == "[ ]")
+    if len(freie_felder) > 0:
+        cpu_zug = freie_felder[np.random.choice(len(freie_felder))]
         if symbol == "X":
-            Spielfeld[cpu_zug] = "O"
+            Spielfeld[cpu_zug[0], cpu_zug[1]] = "[O]"
         else:
-            Spielfeld[cpu_zug] = "X"
-    
+            Spielfeld[cpu_zug[0], cpu_zug[1]] = "[X]"
+
 def unentschiedenPruefung():
-        freie_felder = np.where((Spielfeld != "X") & (Spielfeld != "O"))
-        if len(freie_felder[0]) == 0:
-            print("Unentschieden! Das Spielfeld ist voll.")
-            exit()
+    if "[ ]" not in Spielfeld:
+        print("Unentschieden! Das Spielfeld ist voll.")
+        exit()
 
 def gewinnPruefung():
     kombinationen = [
-    
-        [(0,0), (0,1), (0,2)],
-        [(1,0), (1,1), (1,2)],
-        [(2,0), (2,1), (2,2)],
-        
-        [(0,0), (1,0), (2,0)],
-        [(0,1), (1,1), (2,1)],
-        [(0,2), (1,2), (2,2)],
-        
-        [(0,0), (1,1), (2,2)],
-        [(0,2), (1,1), (2,0)]
+        [(0, 0), (0, 1), (0, 2)],
+        [(1, 0), (1, 1), (1, 2)],
+        [(2, 0), (2, 1), (2, 2)],
+        [(0, 0), (1, 0), (2, 0)],
+        [(0, 1), (1, 1), (2, 1)],
+        [(0, 2), (1, 2), (2, 2)],
+        [(0, 0), (1, 1), (2, 2)],
+        [(0, 2), (1, 1), (2, 0)]
     ]
 
     for kombi in kombinationen:
         a, b, c = kombi
-        if Spielfeld[a] == Spielfeld[b] == Spielfeld[c] and Spielfeld[a] != " ":
+        if Spielfeld[a] == Spielfeld[b] == Spielfeld[c] and Spielfeld[a] != "[ ]":
             gewinner = Spielfeld[a]
-            if gewinner == symbol:
-                print("Glückwunsch! Du has0t gewonnen!")
+            if gewinner == f"[{symbol}]":
+                print("Glückwunsch! Du hast gewonnen!")
             else:
                 print("Die CPU hat gewonnen!")
             return True
 
     return False
-       
 
-
-
-Spielfeld = np.matrix([["[ ]", "[ ]", "[ ]"],
-                        ["[ ]", "[ ]", "[ ]"],
-                        ["[ ]", "[ ]", "[ ]"]])
-
+Spielfeld = np.array([["[ ]", "[ ]", "[ ]"],
+                      ["[ ]", "[ ]", "[ ]"],
+                      ["[ ]", "[ ]", "[ ]"]])
 
 print("Willkommen bei deinem Tic Tac Toe Spiel!")
 print("Das Spielfeld ist wie folgt aufgebaut:")
 print(Spielfeld)
 symbolwahl()
 print("Let's Go!")
+
 if symbol == "O":
     print("Die CPU ist am Zug...")
     spielzugComputer()
     print(Spielfeld)
     print(" ")
 else:
-    print("Du bist am Zug! Wähle ein Feld, indem du die Koordinaten eingibst (z.B. 1 1 für die obere linke Ecke).")
+    print("Du bist am Zug! Wähle ein Feld, indem du die Koordinaten eingibst (z.B. 1 1 für die Mitte).")
+    print(Spielfeld)
     print(" ")
 
 while True:
-    zug = input()
-    if zug not in ["0 0", "0 1", "0 2", "1 0", "1 1", "1 2", "2 0", "2 1", "2 2"]:
-        print("Ungültige Eingabe. Bitte gib die Koordinaten im Format 'Zeile Spalte' ein (z.B. 1 1).")
-        continue
-    else:
-        spielzugSpieler()
-        spielzugComputer()
-        print(Spielfeld)
-        if gewinnPruefung():
-            break
-        unentschiedenPruefung()
+    spielzugSpieler()
+    print(Spielfeld)
+    if gewinnPruefung():
+        break
+    unentschiedenPruefung()
+    print("Die CPU ist am Zug...")
+    spielzugComputer()
+    print(Spielfeld)
+    if gewinnPruefung():
+        break
+    unentschiedenPruefung()
     print(" ")
 exit()
