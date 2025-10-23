@@ -1,4 +1,88 @@
 import numpy as np
+import random
+
+class Strategie:
+     def wähle_zug(self):
+          raise NotImplementedError("Methode muss noch in Unterklasse implementiert werden")
+     
+class Zufallsstrategie(Strategie):
+    def wähle_zug(self):
+         freie_felder = np.argwhere(Spielfeld == "[ ]")
+         if len(freie_felder) > 0:
+            cpu_zug = freie_felder[np.random.choice(len(freie_felder))]
+            if symbol == "X":
+                Spielfeld[cpu_zug[0], cpu_zug[1]] = "[O]"
+            else:
+                Spielfeld[cpu_zug[0], cpu_zug[1]] = "[X]"
+    
+class IntelligenteStrategie(Strategie):
+    def siegesZugPruefung(self, symbol):
+        kombinationen = [
+            [(0, 0), (0, 1), (0, 2)],
+            [(1, 0), (1, 1), (1, 2)],
+            [(2, 0), (2, 1), (2, 2)],
+            [(0, 0), (1, 0), (2, 0)],
+            [(0, 1), (1, 1), (2, 1)],
+            [(0, 2), (1, 2), (2, 2)],
+            [(0, 0), (1, 1), (2, 2)],
+            [(0, 2), (1, 1), (2, 0)]
+        ]
+
+        for kombi in kombinationen:
+            a, b, c = kombi
+            if (Spielfeld[a] == Spielfeld[b] and Spielfeld[c] == "[ ]") and Spielfeld[a] == symbol:
+                return c
+
+            elif (Spielfeld[a] == Spielfeld[c] and Spielfeld[b] == "[ ]") and Spielfeld[a] == symbol:
+                return b
+
+            elif (Spielfeld[b] == Spielfeld[c] and Spielfeld[a] == "[ ]") and Spielfeld[b] == symbol:
+                return a
+    
+        return None
+
+    def wähle_zug(self):
+        if symbol == "X":
+            cpuSymbol = "[O]"
+            spielerSymbol = "[X]"
+        else:
+            cpuSymbol = "[X]"
+            spielerSymbol = "[O]"
+    
+        #Eigenen Sieg versvollständigen
+        zug = self.siegesZugPruefung(cpuSymbol)
+        if zug != None:
+            Spielfeld[zug[0],zug[1]] = cpuSymbol
+            return
+    
+        #Gegnerischen Sieg blockieren
+        zug = self.siegesZugPruefung(spielerSymbol)
+        if zug != None:
+            Spielfeld[zug[0],zug[1]] = cpuSymbol
+            return
+    
+        #Zug ins Zentrum
+        mitte = (1, 1)
+        if Spielfeld[mitte] == "[ ]":
+            Spielfeld[mitte] = cpuSymbol
+            return
+    
+        #Zufällige Ecke auswählen
+        ecken = [(0, 0), (0, 2), (2, 0), (2, 2)]
+        random.shuffle(ecken)
+        for x, y in ecken:
+            if Spielfeld[x, y] == "[ ]":
+                Spielfeld[x, y] = cpuSymbol
+                return
+    
+        #Zufällige Seite auswählen
+        seiten = [(0, 1), (1, 0), (2, 1), (1, 2)]
+        random.shuffle(seiten)
+        for x, y in seiten:
+            if Spielfeld[x, y] == "[ ]":
+                Spielfeld[x, y] = cpuSymbol
+                return
+          
 
 def symbolwahl():
     global symbol
@@ -48,7 +132,7 @@ def spielzugSpieler():
         else:
             print("Das Feld ist bereits belegt. Wähle ein anderes Feld.")
 
-def spielzugComputer():
+def spielzugComputerZufall():
     freie_felder = np.argwhere(Spielfeld == "[ ]")
     if len(freie_felder) > 0:
         cpu_zug = freie_felder[np.random.choice(len(freie_felder))]
@@ -56,6 +140,8 @@ def spielzugComputer():
             Spielfeld[cpu_zug[0], cpu_zug[1]] = "[O]"
         else:
             Spielfeld[cpu_zug[0], cpu_zug[1]] = "[X]"
+
+
 
 def unentschiedenPruefung():
     if "[ ]" not in Spielfeld:
@@ -96,9 +182,11 @@ print(Spielfeld)
 symbolwahl()
 print("Let's Go!")
 
+strategie = IntelligenteStrategie()
+
 if symbol == "O":
     print("Die CPU ist am Zug...")
-    spielzugComputer()
+    strategie.wähle_zug()
     print(Spielfeld)
     print(" ")
 else:
@@ -113,7 +201,7 @@ while True:
         break
     unentschiedenPruefung()
     print("Die CPU ist am Zug...")
-    spielzugComputer()
+    strategie.wähle_zug()
     print(Spielfeld)
     if gewinnPruefung():
         break
