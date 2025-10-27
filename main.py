@@ -67,18 +67,18 @@ class IntelligenteStrategie(Strategie):
             Spielfeld[mitte] = cpuSymbol
             return
     
-        #Zufällige Ecke auswählen
-        ecken = [(0, 0), (0, 2), (2, 0), (2, 2)]
-        random.shuffle(ecken)
-        for x, y in ecken:
-            if Spielfeld[x, y] == "[ ]":
-                Spielfeld[x, y] = cpuSymbol
-                return
-    
         #Zufällige Seite auswählen
         seiten = [(0, 1), (1, 0), (2, 1), (1, 2)]
         random.shuffle(seiten)
         for x, y in seiten:
+            if Spielfeld[x, y] == "[ ]":
+                Spielfeld[x, y] = cpuSymbol
+                return
+            
+        #Zufällige Ecke auswählen
+        ecken = [(0, 0), (0, 2), (2, 0), (2, 2)]
+        random.shuffle(ecken)
+        for x, y in ecken:
             if Spielfeld[x, y] == "[ ]":
                 Spielfeld[x, y] = cpuSymbol
                 return
