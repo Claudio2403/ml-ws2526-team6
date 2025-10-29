@@ -1,20 +1,22 @@
 import numpy as np
 import random
 
+# --- (1) KLASSEN-DEFINITIONEN ---
+
 class Strategie:
      def wähle_zug(self):
-          raise NotImplementedError("Methode muss noch in Unterklasse implementiert werden")
+         raise NotImplementedError("Methode muss noch in Unterklasse implementiert werden")
      
 class Zufallsstrategie(Strategie):
     def wähle_zug(self):
          freie_felder = np.argwhere(Spielfeld == "[ ]")
          if len(freie_felder) > 0:
-            cpu_zug = freie_felder[np.random.choice(len(freie_felder))]
-            if symbol == "X":
-                Spielfeld[cpu_zug[0], cpu_zug[1]] = "[O]"
-            else:
-                Spielfeld[cpu_zug[0], cpu_zug[1]] = "[X]"
-    
+             cpu_zug = freie_felder[np.random.choice(len(freie_felder))]
+             if symbol == "X":
+                 Spielfeld[cpu_zug[0], cpu_zug[1]] = "[O]"
+             else:
+                 Spielfeld[cpu_zug[0], cpu_zug[1]] = "[X]"
+     
 class IntelligenteStrategie(Strategie):
     def siegesZugPruefung(self, symbol):
         kombinationen = [
@@ -38,7 +40,7 @@ class IntelligenteStrategie(Strategie):
 
             elif (Spielfeld[b] == Spielfeld[c] and Spielfeld[a] == "[ ]") and Spielfeld[b] == symbol:
                 return a
-    
+        
         return None
 
     def wähle_zug(self):
@@ -82,19 +84,21 @@ class IntelligenteStrategie(Strategie):
             if Spielfeld[x, y] == "[ ]":
                 Spielfeld[x, y] = cpuSymbol
                 return
-          
+            
+
+# --- (2) FUNKTIONS-DEFINITIONEN ---
 
 def symbolwahl():
     global symbol
 
     print("Wähle ein Symbol: X oder O")
-    symbol = input().strip().upper()
-    if symbol == "X" or symbol == "x":
+    symbol_input = input().strip().upper()
+    if symbol_input == "X" or symbol_input == "x":
         symbol = "X"
         print("Du hast X gewählt. Du bist Spieler 1.")
         print("Die CPU ist O.")
         print(" ")
-    elif symbol == "O" or symbol == "o" or symbol == "0":
+    elif symbol_input == "O" or symbol_input == "o" or symbol_input == "0":
         symbol = "O"
         print("Du hast O gewählt. Du bist Spieler 2.")
         print("Die CPU ist X.")
@@ -142,7 +146,6 @@ def spielzugComputerZufall():
             Spielfeld[cpu_zug[0], cpu_zug[1]] = "[X]"
 
 
-
 def unentschiedenPruefung():
     if "[ ]" not in Spielfeld:
         print("Unentschieden! Das Spielfeld ist voll.")
@@ -172,39 +175,53 @@ def gewinnPruefung():
 
     return False
 
+# --- (3) GLOBALE VARIABLEN ---
+# Diese müssen hier definiert werden, damit Tests sie importieren können
 Spielfeld = np.array([["[ ]", "[ ]", "[ ]"],
                       ["[ ]", "[ ]", "[ ]"],
                       ["[ ]", "[ ]", "[ ]"]])
+symbol = "" # Wird von symbolwahl() gesetzt
 
-print("Willkommen bei deinem Tic Tac Toe Spiel!")
-print("Das Spielfeld ist wie folgt aufgebaut:")
-print(Spielfeld)
-symbolwahl()
-print("Let's Go!")
 
-strategie = IntelligenteStrategie()
+# --- (4) SPIELSTART-LOGIK ---
+# Dieser Teil wird nur ausgeführt, wenn du 'python main.py' startest,
+# nicht, wenn 'unittest' oder 'pytest' die Datei importiert.
 
-if symbol == "O":
-    print("Die CPU ist am Zug...")
-    strategie.wähle_zug()
+if __name__ == "__main__":
+    
+    print("Willkommen bei deinem Tic Tac Toe Spiel!")
+    print("Das Spielfeld ist wie folgt aufgebaut:")
     print(Spielfeld)
-    print(" ")
-else:
-    print("Du bist am Zug! Wähle ein Feld, indem du die Koordinaten eingibst.")
-    print(Spielfeld)
-    print(" ")
+    
+    symbolwahl() # Setzt das globale 'symbol'
+    
+    print("Let's Go!")
 
-while True:
-    spielzugSpieler()
-    print(Spielfeld)
-    if gewinnPruefung():
-        break
-    unentschiedenPruefung()
-    print("Die CPU ist am Zug...")
-    strategie.wähle_zug()
-    print(Spielfeld)
-    if gewinnPruefung():
-        break
-    unentschiedenPruefung()
-    print(" ")
-exit()
+    strategie = IntelligenteStrategie()
+
+    if symbol == "O":
+        print("Die CPU ist am Zug...")
+        strategie.wähle_zug()
+        print(Spielfeld)
+        print(" ")
+    else:
+        print("Du bist am Zug! Wähle ein Feld, indem du die Koordinaten eingibst.")
+        print(Spielfeld)
+        print(" ")
+
+    while True:
+        spielzugSpieler()
+        print(Spielfeld)
+        if gewinnPruefung():
+            break
+        unentschiedenPruefung()
+        
+        print("Die CPU ist am Zug...")
+        strategie.wähle_zug()
+        print(Spielfeld)
+        if gewinnPruefung():
+            break
+        unentschiedenPruefung()
+        print(" ")
+        
+    exit()
