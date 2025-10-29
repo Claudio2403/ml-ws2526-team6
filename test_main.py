@@ -2,7 +2,7 @@ import pytest
 import numpy as np
 import main  # Importiert deine main.py
 from main import Zufallsstrategie  # <-- KORREKTUR 1: Fehlender Import hinzugefügt
-
+from main import IntelligenteStrategie
 # --- Konstanten, die wir oft brauchen ---
 LEER = "[ ]"
 X = "[X]"
@@ -210,3 +210,143 @@ def test_zufall_macht_ueberhaupt_einen_zug():
     # Zähle die leeren Felder. Es müssen genau 8 sein.
     anzahl_leer = np.count_nonzero(main.Spielfeld == LEER)
     assert anzahl_leer == 8
+    
+def test_intelligenz_prioritaet_1_gewinnt_selbst():
+    """
+    Testet, ob die KI eine offensichtliche Siegchance nutzt.
+    (Szenario: Gewinnchance nutzen)
+    """
+    # ARRANGE:
+    # Spieler = X, CPU = O.
+    # CPU (O) hat zwei in einer Reihe (0,0) und (0,1).
+    # Der Siegeszug ist (0,2).
+    main.Spielfeld = np.array([
+        [O, O, LEER], # <-- CPU muss (0, 2) wählen
+        [X, X, LEER],
+        [LEER, LEER, LEER]
+    ])
+    main.symbol = "X"
+    
+    strategie = IntelligenteStrategie()
+
+    # ACT:
+    strategie.wähle_zug()
+    
+    # ASSERT:
+    # Prüfe, ob die KI den Siegeszug (0, 2) gemacht hat.
+    assert main.Spielfeld[0, 2] == O
+
+def test_intelligenz_prioritaet_2_blockiert_gegner():
+    """
+    Testet, ob die KI einen gegnerischen Sieg verhindert,
+    wenn sie nicht selbst gewinnen kann.
+    (Szenario: Gegnerischen Sieg verhindern)
+    """
+    # ARRANGE:
+    # Spieler = X, CPU = O.
+    # Spieler (X) hat zwei in einer Reihe (1,0) und (1,1).
+    # Der Block-Zug ist (1,2).
+    # CPU (O) hat keine eigene Gewinnchance.
+    main.Spielfeld = np.array([
+        [O, LEER, LEER],
+        [X, X, LEER], # <-- Spieler droht bei (1, 2)
+        [O, LEER, LEER]
+    ])
+    main.symbol = "X"
+    
+    strategie = IntelligenteStrategie()
+    
+    # ACT:
+    strategie.wähle_zug()
+    
+    # ASSERT:
+    # Prüfe, ob die KI den Block (1, 2) gemacht hat.
+    assert main.Spielfeld[1, 2] == O
+
+def test_intelligenz_prioritaet_3_nimmt_mitte_bei_leerem_feld():
+    """
+    Testet, ob die KI den Startzug in die Mitte macht.
+    (Szenario: Startzug in leerem Spielfeld)
+    """
+    # ARRANGE:
+    # Setze das Feld manuell auf leer zurück
+    main.Spielfeld = np.array([
+        [LEER, LEER, LEER],
+        [LEER, LEER, LEER],
+        [LEER, LEER, LEER]
+    ])
+    main.symbol = "X" # Spieler=X, CPU=O
+    
+    strategie = IntelligenteStrategie()
+
+    # ACT:
+    strategie.wähle_zug()
+    
+    # ASSERT:
+    # Prüfe, ob die KI die Mitte (1, 1) genommen hat.
+    assert main.Spielfeld[1, 1] == O
+
+def test_intelligenz_prioritaet_4_nimmt_seite_wenn_mitte_belegt():
+    """
+    Testet, ob die KI eine Seite wählt, wenn Sieg/Block/Mitte nicht gehen.
+    (Szenario: Nahezu volles Spielfeld / Grenzfall)
+    """
+    # ARRANGE:
+    # Um den Zufall (random.shuffle) bei der Seitenwahl zu kontrollieren,
+    # setzen wir den Seed für das 'random'-Modul in 'main'.
+    main.random.seed(42)
+    
+    
+    # Spieler (X) hat Ecken, CPU (O) hat die Mitte.
+    # Es gibt keine Gewinn- oder Blockchancen.
+    main.Spielfeld = np.array([
+        [X, LEER, LEER],
+        [LEER, O, LEER], # <-- Mitte belegt
+        [LEER, LEER, X]
+    ])
+    main.symbol = "X"
+    
+    # Mit Seed 42 wird die Liste der Seiten [(0,1), (1,0), (2,1), (1,2)]
+    # zu [(1, 2), (1, 0), (0, 1), (2, 1)] gemischt.
+    # Das erste freie Feld in dieser Liste ist (1, 2).
+    
+    strategie = IntelligenteStrategie()
+    
+    # ACT:
+    strategie.wähle_zug()
+    
+    # ASSERT:
+    # Prüfe, ob die KI die Seite (1, 2) genommen hat.
+    assert main.Spielfeld[2, 1] == O
+
+def test_intelligenz_prioritaet_5_nimmt_ecke_als_letztes():
+    """
+    Testet, ob die KI eine Ecke wählt, wenn nichts anderes mehr geht.
+    (Szenario: Nahezu volles Spielfeld / Grenzfall)
+    """
+    # ARRANGE:
+    # Wir setzen wieder den Seed, nur zur Sicherheit.
+    main.random.seed(1)
+    
+    
+    # Alle Seiten und die Mitte sind belegt.
+    # Nur die Ecken (0,0), (0,2), (2,0), (2,2) sind frei.
+    main.Spielfeld = np.array([
+        [LEER, O, LEER],
+        [X, O, X],
+        [LEER, X, LEER]
+    ])
+    main.symbol = "X"
+    
+    # Mit Seed 1 wird die Ecken-Liste [(0,0), (0,2), (2,0), (2,2)]
+    # zu [(0, 0), (2, 0), (0, 2), (2, 2)] gemischt.
+    # Das erste freie Feld ist (0, 0).
+    
+    strategie = IntelligenteStrategie()
+    
+    # ACT:
+    strategie.wähle_zug()
+    
+    # ASSERT:
+    # Prüfe, ob die KI die Ecke (0, 0) genommen hat.
+    assert main.Spielfeld[2, 2] == O
