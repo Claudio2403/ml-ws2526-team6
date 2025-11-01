@@ -350,3 +350,77 @@ def test_intelligenz_prioritaet_5_nimmt_ecke_als_letztes():
     # ASSERT:
     # Prüfe, ob die KI die Ecke (0, 0) genommen hat.
     assert main.Spielfeld[2, 2] == O
+    
+    
+    
+# SCHRITT 1: Der "Studi-Hack"
+# Wir kopieren die Zufallsstrategie und kehren ihre Logik um,
+# damit sie als SPIELER ('symbol') spielt, nicht als CPU (Gegner).
+class ZufallsStrategie_AlsSpieler(main.Strategie):
+    def wähle_zug(self):
+        freie_felder = np.argwhere(main.Spielfeld == LEER)
+        if len(freie_felder) > 0:
+            # Wichtig: Wir benutzen 'main.np.random', um den Seed zu respektieren
+            cpu_zug = freie_felder[main.np.random.choice(len(freie_felder))]
+            
+            # *** GEÄNDERTE LOGIK ***
+            # Sie spielt jetzt als das 'symbol', nicht als der Gegner
+            if main.symbol == "X":
+                main.Spielfeld[cpu_zug[0], cpu_zug[1]] = X
+            else:
+                main.Spielfeld[cpu_zug[0], cpu_zug[1]] = O
+
+
+# SCHRITT 2: Der Testfall
+def test_intelligenz_vs_zufall_spiel(capsys):
+    """
+    Testet ein volles Spiel: 
+    IntelligenteStrategie (CPU, 'O') vs. ZufallsStrategie_AlsSpieler (Spieler, 'X')
+    
+    Wir brauchen 'capsys', um die 'print()'-Ausgabe von 'gewinnPruefung' zu fangen.
+    """
+    
+    # ARRANGE:
+    # 1. Setze das Spiel auf Anfang
+    main.Spielfeld = np.array([
+        [LEER, LEER, LEER],
+        [LEER, LEER, LEER],
+        [LEER, LEER, LEER]
+    ])
+    
+    # 2. Spieler (Zufall) ist X, CPU (Intelligenz) ist O
+    main.symbol = "X"
+    
+    # 3. Seeds setzen, damit das Spiel JEDES MAL GLEICH abläuft
+    main.np.random.seed(42)
+    main.random.seed(42)
+
+    # 4. Erstelle die beiden KIs
+    ki_spieler_zufall = ZufallsStrategie_AlsSpieler()
+    ki_cpu_intelligenz = IntelligenteStrategie()
+
+    # ACT:
+    # Wir simulieren die Spielschleife (max. 5 Züge für jeden)
+    for _ in range(5):
+        
+        # Spieler (Zufall) zieht
+        ki_spieler_zufall.wähle_zug()
+        if main.gewinnPruefung():
+            break # Spiel vorbei?
+        if LEER not in main.Spielfeld:
+            break # Unentschieden?
+            
+        # CPU (Intelligenz) zieht
+        ki_cpu_intelligenz.wähle_zug()
+        if main.gewinnPruefung():
+            break # Spiel vorbei?
+        if LEER not in main.Spielfeld:
+            break # Unentschieden?
+
+    # ASSERT:
+    # Wir fangen die Ausgabe von 'gewinnPruefung()' ab
+    captured = capsys.readouterr()
+    
+    # Wir haben 'IntelligenteStrategie' vs 'Zufallsstrategie' spielen lassen.
+    # Die Intelligente KI (CPU) muss gewinnen.
+    assert "Die CPU hat gewonnen!" in captured.out    
