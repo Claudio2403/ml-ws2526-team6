@@ -1,5 +1,7 @@
 import numpy as np
-import main
+import Aufgabe_2 as main
+
+
 
 # --- Hilfsklassen für Spieler-Start und CPU-Start ---
 

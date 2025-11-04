@@ -119,34 +119,35 @@ def ergebnisSpeichern(gewinner):
 Spielfeld = np.array([["[ ]", "[ ]", "[ ]"],
                       ["[ ]", "[ ]", "[ ]"],
                       ["[ ]", "[ ]", "[ ]"]])
+if __name__ == "__main__":
+    print("Willkommen bei deinem Tic Tac Toe Spiel!")
+    print("Das Spielfeld ist wie folgt aufgebaut:")
+    print(Spielfeld)
 
-print("Willkommen bei deinem Tic Tac Toe Spiel!")
-print("Das Spielfeld ist wie folgt aufgebaut:")
-print(Spielfeld)
-symbolwahl()
-print("Let's Go!")
+    symbolwahl()
+    print("Let's Go!")
 
-if symbol == "O":
-    print("Die CPU ist am Zug...")
-    spielzugComputer()
-    print(Spielfeld)
-    print(" ")
-else:
-    print("Du bist am Zug! Wähle ein Feld, indem du die Koordinaten eingibst.")
-    print(Spielfeld)
-    print(" ")
+    if symbol == "O":
+        print("Die CPU ist am Zug...")
+        spielzugComputer()
+        print(Spielfeld)
+        print(" ")
+    else:
+        print("Du bist am Zug! Wähle ein Feld, indem du die Koordinaten eingibst.")
+        print(Spielfeld)
+        print(" ")
 
-while True:
-    spielzugSpieler()
-    print(Spielfeld)
-    if gewinnPruefung():
-        break
-    unentschiedenPruefung()
-    print("Die CPU ist am Zug...")
-    spielzugComputer()
-    print(Spielfeld)
-    if gewinnPruefung():
-        break
-    unentschiedenPruefung()
-    print(" ")
-exit()
+    while True:
+        spielzugSpieler()
+        print(Spielfeld)
+        if gewinnPruefung():
+            break
+        unentschiedenPruefung()
+        print("Die CPU ist am Zug...")
+        spielzugComputer()
+        print(Spielfeld)
+        if gewinnPruefung():
+            break
+        unentschiedenPruefung()
+        print(" ")
+    exit()

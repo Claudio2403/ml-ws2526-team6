@@ -1,8 +1,9 @@
 import pytest
 import numpy as np
-import main  # Importiert deine main.py
-from main import Zufallsstrategie  # <-- KORREKTUR 1: Fehlender Import hinzugefügt
-from main import IntelligenteStrategie
+import Aufgabe_1   # <-- KORREKTUR 1:
+import Aufgabe_2 as main# Importiert deine main.py
+from Aufgabe_2 import Zufallsstrategie  # <-- KORREKTUR 1: Fehlender Import hinzugefügt
+from Aufgabe_2 import IntelligenteStrategie
 # --- Konstanten, die wir oft brauchen ---
 LEER = "[ ]"
 X = "[X]"
