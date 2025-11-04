@@ -116,9 +116,7 @@ def test_ungueltig_leer():
     # leere Eingabe -> falsch
     assert main.ungültigerZugPruefung("") == False
 
-def test_buchstaben():
-    # nochmal Buchstaben-Check
-    assert main.ungültigerZugPruefung("x y") == False
+
 
 # Tests für die Zufalls-KI
 def test_zufall_waehlt_letztes_freies_feld():
