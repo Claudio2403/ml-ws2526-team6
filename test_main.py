@@ -1,8 +1,8 @@
 import pytest
 import numpy as np
-import Aufgabe_1   # <-- KORREKTUR 1:
-import Aufgabe_2 as main# Importiert deine main.py
-from Aufgabe_2 import Zufallsstrategie  # <-- KORREKTUR 1: Fehlender Import hinzugefügt
+import Aufgabe_1   
+import Aufgabe_2 as main
+from Aufgabe_2 import Zufallsstrategie  
 from Aufgabe_2 import IntelligenteStrategie
 # --- Konstanten, die wir oft brauchen ---
 LEER = "[ ]"
@@ -109,10 +109,13 @@ def test_ungueltig_nur_eine_zahl():
 
 def test_ungueltig_leer():
     assert main.ungültigerZugPruefung("") == False
+    
+def test_buchstaben():
+    assert main.ungültigerZugPruefung("x y") == False
 
 
 # --- 5. Tests für die Zufallsstrategie ---
-# KORREKTUR 2: Diese Funktionen sind jetzt NICHT mehr eingerückt
+
 
 def test_zufall_waehlt_letztes_freies_feld():
     """
@@ -165,10 +168,7 @@ def test_zufall_mit_seed_waehlt_vorhersehbares_feld():
     main.Spielfeld = brett
     main.symbol = "X" # Spieler=X, CPU=O
 
-    # Wenn dein Code die freien Felder (0,0), (1,1), (2,2) findet
-    # und 'np.random.choice(3)' mit Seed 42 aufruft,
-    # wird er (auf den meisten Systemen) Index 0 wählen.
-    # Index 0 entspricht dem Feld (0, 0).
+  
     
     strategie = Zufallsstrategie()
 
@@ -176,7 +176,7 @@ def test_zufall_mit_seed_waehlt_vorhersehbares_feld():
     strategie.wähle_zug()
     
     # ASSERT:
-    # Wir wetten darauf, dass der Seed 42 das Feld (0, 0) ausgewählt hat.
+    # Wir wetten darauf, dass der Seed 42 das Feld (2, 2) ausgewählt hat.
     assert main.Spielfeld[2, 2] == O
     
     # Stelle sicher, dass die anderen freien Felder NICHT gefüllt wurden
@@ -307,17 +307,14 @@ def test_intelligenz_prioritaet_4_nimmt_seite_wenn_mitte_belegt():
     ])
     main.symbol = "X"
     
-    # Mit Seed 42 wird die Liste der Seiten [(0,1), (1,0), (2,1), (1,2)]
-    # zu [(1, 2), (1, 0), (0, 1), (2, 1)] gemischt.
-    # Das erste freie Feld in dieser Liste ist (1, 2).
-    
+   
     strategie = IntelligenteStrategie()
     
     # ACT:
     strategie.wähle_zug()
     
     # ASSERT:
-    # Prüfe, ob die KI die Seite (1, 2) genommen hat.
+    # Prüfe, ob die KI die Seite (2, 1) genommen hat.
     assert main.Spielfeld[2, 1] == O
 
 def test_intelligenz_prioritaet_5_nimmt_ecke_als_letztes():
@@ -349,15 +346,12 @@ def test_intelligenz_prioritaet_5_nimmt_ecke_als_letztes():
     strategie.wähle_zug()
     
     # ASSERT:
-    # Prüfe, ob die KI die Ecke (0, 0) genommen hat.
+    # Prüfe, ob die KI die Ecke (2, 2) genommen hat.
     assert main.Spielfeld[2, 2] == O
     
     
 class ZufallsStrategie_AlsSpieler(main.Strategie):
-    """
-    Gehackte Version der Zufallsstrategie, die als 'Spieler' (main.symbol)
-    spielt, nicht als 'CPU' (Gegner).
-    """
+    """Zufallsstrategie spielt als Spieler (X)."""
     def wähle_zug(self):
         freie_felder = np.argwhere(main.Spielfeld == LEER)
         if len(freie_felder) > 0:
@@ -371,11 +365,7 @@ class ZufallsStrategie_AlsSpieler(main.Strategie):
 # --- Die KI-vs-KI-Simulation ---
 
 def test_simulation_ki_vs_ki_statistik(capsys):
-    """
-    Führt eine Simulation (kein Test!) von 50 Spielen durch
-    und GIBT NUR AUS, wie oft jedes Ergebnis passiert ist.
-    Dieser Test kann NICHT fehlschlagen.
-    """
+ 
     
     # ARRANGE:
     ki_spieler_zufall = ZufallsStrategie_AlsSpieler() 

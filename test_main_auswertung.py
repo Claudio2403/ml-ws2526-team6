@@ -26,7 +26,7 @@ def test_simulation_ki_vs_ki_statistik(capsys):
     Das Startrecht (X) wechselt bei jedem Spiel.
     """
     LEER = "[ ]"
-    anzahl_spiele = 50
+    anzahl_spiele = 100
 
     leeres_brett = np.array([[LEER, LEER, LEER],
                              [LEER, LEER, LEER],
