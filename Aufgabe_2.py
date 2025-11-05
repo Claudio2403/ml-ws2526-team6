@@ -149,6 +149,7 @@ def spielzugComputerZufall():
 def unentschiedenPruefung():
     if "[ ]" not in Spielfeld:
         print("Unentschieden! Das Spielfeld ist voll.")
+        ergebnisSpeichern("Unentschieden")
         exit()
 
 def gewinnPruefung():
@@ -169,11 +170,38 @@ def gewinnPruefung():
             gewinner = Spielfeld[a]
             if gewinner == f"[{symbol}]":
                 print("Glückwunsch! Du hast gewonnen!")
+                ergebnisSpeichern("Spieler")
             else:
                 print("Die CPU hat gewonnen!")
+                ergebnisSpeichern("CPU")
             return True
 
     return False
+
+def ergebnisSpeichern(gewinner):
+    dateiname = "Ergebnisse.txt"
+    ergebnisse = {"Spieler": 0, "CPU": 0, "Unentschieden": 0, "Gesamtspiele": 0}
+
+    try:
+        with open(dateiname, "r") as datei:
+            for zeile in datei:
+                name, wert = zeile.strip().split(": ")
+                ergebnisse[name] = int(wert)
+    except FileNotFoundError:
+        pass  
+
+    if gewinner == "Spieler":
+        ergebnisse["Spieler"] += 1
+    elif gewinner == "CPU":
+        ergebnisse["CPU"] += 1
+    elif gewinner == "Unentschieden":
+        ergebnisse["Unentschieden"] += 1
+
+    ergebnisse["Gesamtspiele"] += 1
+
+    with open(dateiname, "w") as datei:
+        for name, wert in ergebnisse.items():
+            datei.write(f"{name}: {wert}\n")
 
 # --- (3) GLOBALE VARIABLEN ---
 # Diese müssen hier definiert werden, damit Tests sie importieren können
