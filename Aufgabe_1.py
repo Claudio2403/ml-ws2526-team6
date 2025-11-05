@@ -60,6 +60,7 @@ def spielzugComputer():
 def unentschiedenPruefung():
     if "[ ]" not in Spielfeld:
         print("Unentschieden! Das Spielfeld ist voll.")
+        ergebnisSpeichern("Unentschieden")
         exit()
 
 def gewinnPruefung():
