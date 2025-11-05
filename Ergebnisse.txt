@@ -1,4 +1,4 @@
-Spieler: 0
+Spieler: 1
 CPU: 0
 Unentschieden: 0
-Gesamtspiele: 0
+Gesamtspiele: 1
