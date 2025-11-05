@@ -1,11 +1,4 @@
-Intelligent vs Zufall
-Zufall: 9
-Intelligent: 918
-Unentschieden: 73
-Gesamtspiele: 1000
-
-Zufall vs Intelligent
-Intelligent: 775
-Zufall: 47
-Unentschieden: 178
-Gesamtspiele: 1000
+Spieler: 0
+CPU: 0
+Unentschieden: 0
+Gesamtspiele: 0
