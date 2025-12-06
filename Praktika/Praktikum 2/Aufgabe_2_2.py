@@ -13,6 +13,9 @@ def predict(X, beta):
     y_hat = X @ beta
     return y_hat
 
+beta = normal_equation(X, y)
+y_hat = predict(X, beta)
+
 if __name__ == "__main__":
     beta = normal_equation(X, y)
     y_hat = predict(X, beta)
