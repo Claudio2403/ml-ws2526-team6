@@ -24,4 +24,4 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run Script
-        run: python pipeline.py
+        run: python Pipeline.py
