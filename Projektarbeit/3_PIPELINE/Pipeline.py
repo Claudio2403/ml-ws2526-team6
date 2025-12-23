@@ -20,7 +20,7 @@ y = data["CO2_Emissions"]
 
 numerical_cols = ["Model_Year", "Engine_Size", "Cylinders", "Fuel_Consumption_in_City(L/100 km)", "Fuel_Consumption_in_City_Hwy(L/100 km)", "Fuel_Consumption_comb(L/100km)", "Smog_Level"]
 categorical_cols = ["Make", "Model", "Transmission", "Vehicle_Class"]
-
+#Hallo
 numerical_pipeline = Pipeline([
     ('imputer', SimpleImputer(strategy="mean")),
     ('scaler', StandardScaler())
