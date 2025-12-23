@@ -56,3 +56,9 @@ rsme = np.sqrt(mse)
 print(f"Mean Squared Error: {rsme}")
 print(f"Mean Absolute Error: {mae}")
 print(f"R-squared: {r2}")
+
+# ... dein bisheriger Code (Training & Evaluierung) ...
+
+print("Speichere das Modell...")
+joblib.dump(pipeline, 'co2_model.joblib')  # Wir speichern die ganze Pipeline!
+print("Modell erfolgreich als 'co2_model.joblib' gespeichert.")
