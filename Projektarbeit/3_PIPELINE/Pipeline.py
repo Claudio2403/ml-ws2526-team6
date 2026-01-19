@@ -57,7 +57,7 @@ prediction = pipeline.predict(X_test)
 
 mse = mean_squared_error(y_test, prediction)
 mae = mean_absolute_error(y_test, prediction)
-r2 = r2_score(y_test, prediction)
+r2  = r2_score(y_test, prediction)
 rsme = np.sqrt(mse)
 
 
@@ -66,7 +66,7 @@ train_prediction = pipeline.predict(X_train)
 
 mse_train = mean_squared_error(y_train, train_prediction)
 mae_train = mean_absolute_error(y_train, train_prediction)
-r2_train = r2_score(y_train, train_prediction)
+r2_train  = r2_score(y_train, train_prediction)
 rmse_train = np.sqrt(mse_train)
 
 print(f"Training R-squared: {r2_train}")
@@ -78,6 +78,6 @@ print(f"R-squared: {r2}")
 
 
 
-print("Speichere das Modell...")
+
 joblib.dump(pipeline, 'co2_model.joblib')  
-print("Modell erfolgreich als 'co2_model.joblib' gespeichert.")
+
